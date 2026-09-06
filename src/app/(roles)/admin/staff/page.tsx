@@ -29,24 +29,38 @@ export default function StaffManagement() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
-      {/* Header Area */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="w-full px-6 py-6 md:px-8 max-w-[1600px] mx-auto space-y-6">
+      
+      {/* ================= PAGE HEADER ================= */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 pb-4 border-b border-[#EAEAEA]">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Staff Management</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage employee credentials, roles, and system access.</p>
+          <div className="text-[10px] font-bold text-[#6F6B7D] uppercase tracking-widest mb-1.5">
+            Administration / Staff
+          </div>
+          <h1 className="text-2xl font-bold text-[#1F1A67] tracking-tight">Staff Management</h1>
+          <p className="text-sm text-[#6F6B7D] mt-1">Manage hospital employees, roles, departments and system access.</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 text-sm shadow-sm transition-colors flex items-center"
+          className="px-5 py-2.5 bg-[#1F1A67] text-white font-medium rounded hover:bg-[#3B3486] text-sm transition-colors flex items-center shrink-0"
         >
           <UserPlus className="w-4 h-4 mr-2" /> Add New Staff
         </button>
       </div>
 
-      {/* Feature Components */}
-      <StaffTable staffList={staffList} onDelete={handleDeleteStaff} />
+      {/* ================= FEATURE COMPONENTS ================= */}
+      <div className="bg-white border border-[#EAEAEA] rounded-md overflow-hidden">
+        {/* 
+          No changes required for the internal functionality of StaffTable.
+          It is safely wrapped in a clean, flat container matching the Sahyadri identity.
+        */}
+        <StaffTable staffList={staffList} onDelete={handleDeleteStaff} />
+      </div>
       
+      {/* 
+        No changes required for the internal functionality of AddStaffModal.
+        It remains fully integrated with the React state of this page.
+      */}
       {showAddModal && (
         <AddStaffModal 
           onClose={() => setShowAddModal(false)} 

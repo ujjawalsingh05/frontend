@@ -2,112 +2,223 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, Mail, Lock, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
   const router = useRouter();
   const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setIsLoading(true);
 
-    // Simulate API delay
+    const normalizedEmail = email.trim().toLowerCase();
+    
+    // 1. Role Detection Logic
+    let role = "";
+    let route = "";
+    let mockId = "";
+    let mockName = "";
+
+    if (normalizedEmail.startsWith("staff@")) {
+      role = "admin";
+      route = "/admin";
+      mockId = "ADM-1001";
+      mockName = "Hospital Administration";
+    } else if (normalizedEmail.startsWith("dr@")) {
+      role = "doctor";
+      route = "/doctor";
+      mockId = "DOC-10492";
+      mockName = "Dr. James Wilson";
+    } else if (normalizedEmail.startsWith("nurse@")) {
+      role = "nurse";
+      route = "/nurse";
+      mockId = "NUR-2084";
+      mockName = "Nurse Sarah Jenkins";
+    } else {
+      // Invalid role handling
+      setError("Unrecognized hospital role. Please use your registered staff email.");
+      setIsLoading(false);
+      return;
+    }
+
+    // 2. Authentication Flow
     setTimeout(() => {
-      // Mock successful login
       login("mock-jwt-token-123", {
-        id: "DOC-10492",
-        name: "Dr. James Wilson",
-        role: "doctor"
+        id: mockId,
+        name: mockName,
+        role: role
       });
       
-      router.push("/doctor");
+      router.push(route);
     }, 800);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-        
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl text-blue-600 mb-4 border border-blue-100">
-            <Activity className="w-6 h-6" />
+    <div className="min-h-screen flex flex-col md:flex-row bg-[#FAF9FC] font-sans">
+      
+      {/* ================= LEFT / PRIMARY VISUAL AREA ================= */}
+      <div className="w-full md:w-5/12 lg:w-4/12 bg-[#F4F0F8] flex flex-col justify-center px-8 md:px-12 py-12 md:py-0 border-b md:border-b-0 md:border-r border-[#EAEAEA]">
+        <div className="max-w-md mx-auto w-full">
+          <div className="mb-8">
+            <Image 
+              src="/logo.png" 
+              alt="Sahyadri Hospital Logo" 
+              width={64} 
+              height={64}
+              className="w-16 h-16 object-contain mb-6"
+            />
+            <h1 className="text-3xl font-bold text-[#1F1A67] tracking-tight mb-2">
+              Sahyadri Hospital
+            </h1>
+            <h2 className="text-xl text-[#3B3486] font-medium mb-6">
+              Hospital Management Portal
+            </h2>
+            <div className="h-1 w-12 bg-[#C61A4C] mb-6"></div>
+            <p className="text-[#25233A] leading-relaxed text-lg">
+              Secure access for doctors, nurses, and hospital staff.
+            </p>
+            <div className="flex items-center gap-2 mt-8 text-[#6F6B7D]">
+              <ShieldCheck className="w-5 h-5 text-[#00A3E0]" />
+              <span className="text-sm font-medium">Enterprise Security Encrypted</span>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">MediFlow Portal</h1>
-          <p className="text-sm text-slate-500 mt-2">Enter your credentials to access your account.</p>
         </div>
+      </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">
-              Email Address
-            </label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="staff@mediflow.local"
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-              />
-            </div>
+      {/* ================= RIGHT / LOGIN AREA ================= */}
+      <div className="w-full md:w-7/12 lg:w-8/12 flex items-center justify-center p-8 md:p-12 lg:p-24 bg-white">
+        <div className="w-full max-w-md">
+          
+          <div className="mb-10">
+            <h3 className="text-2xl font-bold text-[#1F1A67] mb-2">Sign In</h3>
+            <p className="text-[#6F6B7D]">Access your workspace securely.</p>
           </div>
 
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider">
-                Password
-              </label>
-              <a href="/reset-password" className="text-[10px] font-bold text-slate-400 hover:text-blue-600 uppercase tracking-wider transition-colors">
-                Forgot Password?
-              </a>
-            </div>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3.5 bg-[#1a365d] text-white font-bold rounded-xl hover:bg-blue-900 transition-colors shadow-sm flex justify-center items-center group disabled:opacity-70"
-          >
-            {isLoading ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Authenticating...
-              </span>
-            ) : (
-              <span className="flex items-center">
-                Sign In <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </span>
+          <form onSubmit={handleLogin} className="space-y-6">
+            
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-100 rounded-md text-red-600 text-sm font-medium">
+                {error}
+              </div>
             )}
-          </button>
-        </form>
-        
-        <div className="mt-8 pt-6 border-t border-slate-100">
-          <div className="bg-slate-50 rounded-xl p-4 text-xs text-slate-500">
-            <p className="font-bold text-slate-700 mb-1">Demo Access Credentials:</p>
-            <p>Email: <span className="font-medium text-slate-900">any@email.com</span></p>
-            <p>Password: <span className="font-medium text-slate-900">any-password</span></p>
+
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[#25233A] mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="w-5 h-5 text-[#6F6B7D] absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(""); // Clear error on typing
+                  }}
+                  placeholder="name@sahyadri.com"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#EAEAEA] rounded-md text-[15px] text-[#25233A] outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-gray-400"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-[#25233A]">
+                  Password
+                </label>
+                <a 
+                  href="/reset-password" 
+                  className="text-sm font-medium text-[#1F1A67] hover:text-[#C61A4C] transition-colors"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+              <div className="relative">
+                <Lock className="w-5 h-5 text-[#6F6B7D] absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-12 py-3 bg-white border border-[#EAEAEA] rounded-md text-[15px] text-[#25233A] outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-gray-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#6F6B7D] hover:text-[#1F1A67] transition-colors focus:outline-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 bg-[#1F1A67] text-white font-medium text-[15px] rounded-md hover:bg-[#3B3486] transition-colors flex justify-center items-center group disabled:opacity-80 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <Loader2 className="animate-spin -ml-1 mr-2 w-5 h-5 text-white" />
+                  Authenticating...
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  Sign In 
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                </span>
+              )}
+            </button>
+          </form>
+          
+          {/* Demo Credentials Section */}
+          <div className="mt-12 pt-8 border-t border-[#EAEAEA]">
+            <h4 className="text-xs font-semibold text-[#6F6B7D] uppercase tracking-wider mb-4">
+              Demo Access
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Administration</span>
+                <span className="text-[#6F6B7D]">staff@example.com</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Doctors</span>
+                <span className="text-[#6F6B7D]">dr@example.com</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Nurses</span>
+                <span className="text-[#6F6B7D]">nurse@example.com</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Global Password</span>
+                <span className="text-[#6F6B7D]">any-password</span>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>

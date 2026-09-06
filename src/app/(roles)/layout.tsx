@@ -1,157 +1,247 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { 
-  Users, Calendar, CreditCard, Activity, Stethoscope, 
-  FileText, Pill, Package, LayoutDashboard, Settings, 
-  LogOut, ClipboardList, ShieldAlert, TestTube, Search 
+  Stethoscope, 
+  Users, 
+  Activity, 
+  Pill, 
+  Microscope, 
+  Settings, 
+  LogOut, 
+  Bell,
+  Search,
+  Menu,
+  X,
+  LayoutDashboard,
+  LineChart
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+
+// Assuming your auth hook is located here based on standard patterns. Adjust the import path if necessary.
+import { useAuth } from "@/hooks/useAuth"; 
+
+// Dynamic initials generator for the avatar
+const getInitials = (name: string) => {
+  if (!name) return "U";
+  const parts = name.trim().split(" ");
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
+};
+
+// Existing role configuration architecture preserved
+const sidebarConfigs: Record<string, { title: string; user: { name: string; role: string }; links: any[] }> = {
+  admin: {
+    title: "HOSPITAL OPERATIONS",
+    user: { name: "Admin User", role: "Super Administrator" },
+    links: [
+      { name: "Facility Overview", href: "/admin", icon: LayoutDashboard },
+      { name: "Staff Management", href: "/admin/staff", icon: Users },
+      { name: "Financial Metrics", href: "/admin/finance", icon: LineChart },
+      { name: "Admin Setup", href: "/settings", icon: Settings },
+    ]
+  },
+  doctor: {
+    title: "MEDICAL SERVICES",
+    user: { name: "Dr. James Wilson", role: "Senior Physician" },
+    links: [
+      { name: "Doctor EMR", href: "/doctor", icon: Stethoscope },
+    ]
+  },
+  nurse: {
+    title: "WARD & NURSING",
+    user: { name: "Sarah Jenkins", role: "Head Nurse" },
+    links: [
+      { name: "Nurse Station", href: "/nurse", icon: Activity },
+    ]
+  },
+  pharmacy: {
+    title: "PHARMACY OPS",
+    user: { name: "Robert Fox", role: "Chief Pharmacist" },
+    links: [
+      { name: "Pharmacy", href: "/pharmacy", icon: Pill },
+    ]
+  },
+  laboratory: {
+    title: "LAB DIAGNOSTICS",
+    user: { name: "Emily Chen", role: "Lab Technician" },
+    links: [
+      { name: "Laboratory", href: "/laboratory", icon: Microscope },
+    ]
+  },
+  reception: {
+    title: "RECEPTION DESK",
+    user: { name: "Michael Brown", role: "Front Desk Officer" },
+    links: [
+      { name: "Reception", href: "/reception", icon: Users },
+    ]
+  }
+};
 
 export default function RoleLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { logout } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Define sidebar configurations for each role exactly as shown in screenshots
-  const sidebarConfigs: Record<string, any> = {
-    reception: {
-      title: "RECEPTION DESK",
-      user: { name: "Alice Thompson", role: "RECEPTION LEAD", img: "https://i.pravatar.cc/150?u=alice" },
-      links: [
-        { name: "Patient Registration", path: "/reception", icon: Users },
-        { name: "Patient Directory", path: "/shared/patients", icon: FileText },
-        { name: "Slot Booking", path: "/reception/booking", icon: Calendar },
-        { name: "Payments", path: "/reception/billing", icon: CreditCard },
-      ]
-    },
-    nurse: {
-      title: "WARD & NURSING",
-      user: { name: "Sarah Palmer", role: "HEAD NURSE • 1ST FLOOR", img: "https://i.pravatar.cc/150?u=sarah" },
-      links: [
-        { name: "Ward Status", path: "/nurse", icon: Activity },
-        { name: "Nursing Notes", path: "/nurse/notes", icon: ClipboardList },
-        { name: "Medication Tracking", path: "/nurse/meds", icon: Pill },
-        { name: "Shift Handover", path: "/nurse/shift", icon: FileText },
-      ]
-    },
-    doctor: {
-      title: "MEDICAL SERVICES",
-      user: { name: "Dr. James Wilson", role: "SENIOR CARDIOLOGIST", img: "https://i.pravatar.cc/150?u=james" },
-      links: [
-        { name: "EMR & Consult", path: "/doctor", icon: Stethoscope },
-        { name: "Appointments", path: "/doctor/appointments", icon: Calendar },
-        { name: "Lab Reports", path: "/doctor/reports", icon: FileText },
-        { name: "Billing History", path: "/doctor/billing", icon: CreditCard },
-      ]
-    },
-    pharmacy: {
-      title: "PHARMACY OPS",
-      user: { name: "Robert Miller", role: "HEAD PHARMACIST", img: "https://i.pravatar.cc/150?u=robert" },
-      links: [
-        { name: "Dispensing Queue", path: "/pharmacy", icon: Pill },
-        { name: "Stock Management", path: "/pharmacy/stock", icon: Package },
-        { name: "Supplier Orders", path: "/pharmacy/orders", icon: FileText },
-        { name: "Prescription Logs", path: "/pharmacy/logs", icon: ClipboardList },
-      ]
-    },
-    admin: {
-      title: "ADMIN CONTROL",
-      user: { name: "Admin User", role: "SUPER ADMINISTRATOR", img: "https://i.pravatar.cc/150?u=admin" },
-      links: [
-        { name: "Facility Overview", path: "/admin", icon: LayoutDashboard },
-        { name: "Staff Management", path: "/admin/staff", icon: Users },
-        { name: "Financial Metrics", path: "/admin/finance", icon: CreditCard },
-        { name: "System Settings", path: "/settings", icon: Settings },
-      ]
-    },
-    laboratory: {
-      title: "LAB DIAGNOSTICS",
-      user: { name: "Alice Thompson", role: "CHIEF PATHOLOGIST", img: "https://i.pravatar.cc/150?u=alice_lab" },
-      links: [
-        { name: "Sample Collection", path: "/laboratory", icon: TestTube },
-        { name: "Test Processing", path: "/laboratory/processing", icon: Activity },
-        { name: "Result Publication", path: "/laboratory/results", icon: FileText },
-        { name: "Reagent Inventory", path: "/laboratory/inventory", icon: Package },
-      ]
-    },
-  };
-
-  // Determine active config based on URL path
-  const currentRole = pathname.split('/')[1];
-  // Default to admin/main menu if role not specifically mapped
-  const config = sidebarConfigs[currentRole] || sidebarConfigs.admin; 
+  // Existing dynamic role routing logic
+  const currentRole = pathname.split('/')[1] || 'admin';
+  const config = sidebarConfigs[currentRole] || sidebarConfigs['admin'];
 
   return (
-    <div className="flex h-screen bg-[#f8fafc] font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#F7F8FC] font-sans text-[#2B2B2B] overflow-hidden">
       
-      {/* Dynamic Sidebar */}
-      <aside className="w-[260px] bg-[#1a365d] text-white flex flex-col flex-shrink-0 shadow-xl z-20">
-        <div className="p-6 flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-            <Activity className="w-5 h-5 text-white" />
+      {/* ================= MOBILE HEADER ================= */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1F1A67] z-50 flex items-center justify-between px-4 border-b border-[#3B3486]">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.png" alt="Sahyadri Hospital" width={28} height={28} className="object-contain" />
+          <span className="text-white font-bold tracking-tight text-base">SAHYADRI</span>
+        </div>
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white p-2">
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* ================= SIDEBAR ================= */}
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-40
+        w-[260px] bg-[#1F1A67] text-white flex flex-col shrink-0
+        transform transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? "translate-x-0 pt-16" : "-translate-x-full md:translate-x-0 md:pt-0"}
+      `}>
+        {/* Brand Area */}
+        <div className="hidden md:flex h-[72px] items-center px-6 border-b border-white/10 shrink-0 bg-[#1F1A67]">
+          <Image 
+            src="/logo.png" 
+            alt="Sahyadri Hospital Logo" 
+            width={32} 
+            height={32} 
+            className="object-contain mr-3 shrink-0" 
+          />
+          <div className="flex flex-col justify-center">
+            <span className="text-white font-bold tracking-tight text-[15px] leading-tight">SAHYADRI</span>
+            <span className="text-[#00A3E0] text-[10px] font-bold tracking-widest uppercase leading-tight">Hospital</span>
           </div>
-          <span className="text-xl font-bold tracking-wide">MediFlow</span>
         </div>
 
-        <div className="px-6 py-2">
-          <p className="text-[10px] font-bold text-blue-300 uppercase tracking-widest">{config.title}</p>
-        </div>
-
-        <nav className="flex-1 mt-4 space-y-1 px-3 overflow-y-auto">
-          {config.links.map((link: any) => {
-            const isActive = pathname === link.path;
-            return (
-              <button
-                key={link.path}
-                onClick={() => router.push(link.path)}
-                className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  isActive 
-                    ? "bg-blue-600 text-white shadow-md" 
-                    : "text-blue-100 hover:bg-[#2a4365] hover:text-white"
-                }`}
-              >
-                <link.icon className={`w-4 h-4 ${isActive ? "text-white" : "text-blue-300"}`} />
-                <span>{link.name}</span>
-              </button>
-            );
-          })}
+        {/* Dynamic Navigation */}
+        <nav className="flex-1 overflow-y-auto py-6 space-y-1">
+          <div className="px-6 mb-3 text-[10px] font-bold text-[#F4F0F8]/50 uppercase tracking-widest">
+            {config.title}
+          </div>
+          
+          <div className="flex flex-col space-y-0.5">
+            {config.links.map((link) => {
+              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              const Icon = link.icon;
+              
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`flex items-center px-6 py-3 transition-colors ${
+                    isActive
+                      ? "bg-[#3B3486] text-white border-l-[3px] border-[#00A3E0]"
+                      : "text-[#F4F0F8]/70 hover:bg-white/5 hover:text-white border-l-[3px] border-transparent"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Icon className={`w-[18px] h-[18px] mr-3 shrink-0 transition-colors ${isActive ? "text-[#00A3E0]" : "text-[#F4F0F8]/50"}`} />
+                  <span className="font-medium text-[14px]">{link.name}</span>
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
-        {/* User Profile Footer */}
-        <div className="p-4 border-t border-[#2a4365]">
-          <div className="flex items-center space-x-3 mb-4 px-2">
-            <img src={config.user.img} alt="User" className="w-10 h-10 rounded-full border border-[#2a4365]" />
-            <div>
-              <p className="text-sm font-bold text-white">{config.user.name}</p>
-              <p className="text-[9px] font-bold text-blue-300 uppercase tracking-wider">{config.user.role}</p>
+        {/* Dynamic User Profile & Logout */}
+        <div className="p-4 border-t border-white/10 shrink-0 bg-black/10">
+          <div className="flex items-center gap-3 px-2 mb-4">
+            <div className="w-9 h-9 rounded-full bg-[#3B3486] flex items-center justify-center shrink-0 border border-white/10">
+              <span className="text-white text-xs font-bold tracking-wider">
+                {getInitials(config.user.name)}
+              </span>
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-white font-medium text-sm truncate">{config.user.name}</span>
+              <span className="text-[#00A3E0] text-[10px] font-bold tracking-wider uppercase truncate">{config.user.role}</span>
             </div>
           </div>
-          <button 
+          <button
             onClick={logout}
-            className="w-full flex items-center justify-center space-x-2 py-2 rounded-lg bg-[#2a4365] hover:bg-red-500/20 hover:text-red-400 text-blue-200 transition-colors text-sm font-medium"
+            className="flex items-center justify-center w-full py-2.5 rounded text-[#F4F0F8]/70 hover:bg-[#C61A4C]/10 hover:text-[#C61A4C] transition-colors text-sm font-medium"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
+            <LogOut className="w-4 h-4 mr-2" /> 
+            Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <div className="flex-1 overflow-y-auto p-6 md:p-8">
-          {children}
-        </div>
+      {/* ================= MAIN LAYOUT AREA ================= */}
+      <div className="flex-1 flex flex-col min-w-0">
         
-        {/* Global Footer Status Bar */}
-        <div className="absolute bottom-4 left-8 right-8 flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-transparent">
-          <span>© 2026 MEDIFLOW ENTERPRISE • {config.title} NODE</span>
-          <div className="flex space-x-6">
-            <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5"></span> SYSTEM SYNC: OK</span>
-            <span className="flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5"></span> V2.4.1 STABLE</span>
+        {/* Top Header */}
+        <header className="h-[72px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
+          
+          {/* Search */}
+          <div className="flex items-center flex-1 max-w-md">
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-[#6F6B7D] absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <input 
+                type="text" 
+                placeholder="Search patient, staff, or department..." 
+                className="w-full pl-10 pr-4 py-2 bg-[#F7F8FC] border border-[#EAEAEA] rounded-md text-sm text-[#2B2B2B] focus:outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-[#6F6B7D]/70"
+              />
+            </div>
           </div>
-        </div>
-      </main>
+
+          {/* Right Actions & Header Profile */}
+          <div className="flex items-center space-x-6">
+            <button className="relative text-[#6F6B7D] hover:text-[#1F1A67] transition-colors focus:outline-none">
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#C61A4C] rounded-full ring-2 ring-white"></span>
+            </button>
+            
+            <div className="w-px h-5 bg-[#EAEAEA]"></div>
+            
+            <div className="flex items-center gap-3 cursor-pointer group">
+              <div className="hidden md:flex flex-col text-right">
+                <span className="text-[13px] font-semibold text-[#1F1A67] leading-tight">{config.user.name}</span>
+                <span className="text-[10px] text-[#6F6B7D] font-bold uppercase tracking-wider">{config.user.role}</span>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#3B3486] flex items-center justify-center text-white border border-[#EAEAEA] group-hover:border-[#1F1A67] transition-colors shrink-0">
+                <span className="text-xs font-bold">{getInitials(config.user.name)}</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Scrollable Content Area */}
+        <main className="flex-1 overflow-y-auto w-full relative">
+          <div className="min-h-full flex flex-col">
+            
+            {/* The individual page.tsx content injects here without excessive top padding */}
+            <div className="flex-1">
+              {children}
+            </div>
+            
+            {/* Dynamic Footer / Status Bar */}
+            <footer className="w-full border-t border-[#EAEAEA] py-4 px-6 md:px-8 shrink-0 mt-8">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-[11px] text-[#6F6B7D] font-medium tracking-wider">
+                <p className="uppercase">&copy; 2026 SAHYADRI HOSPITAL • {config.title}</p>
+                <div className="flex items-center gap-4 uppercase">
+                  <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0]"></span> SYSTEM SYNC: OK</span>
+                  <span>V2.4.1 STABLE</span>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </main>
+
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { 
   Stethoscope, 
   Users, 
@@ -27,86 +28,122 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex h-screen bg-surface">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-brand-900 text-white flex flex-col shadow-xl z-20">
-        <div className="h-16 flex items-center px-6 border-b border-brand-800 bg-brand-950">
-          <Activity className="w-6 h-6 text-brand-300 mr-3" />
-          <span className="text-lg font-bold tracking-wide">MediFlow</span>
+    <div className="flex h-screen bg-[#F7F8FC] font-sans text-[#2B2B2B] overflow-hidden">
+      
+      {/* ================= SIDEBAR ================= */}
+      <aside className="w-[260px] bg-[#1F1A67] text-white flex flex-col shrink-0 z-20 shadow-[4px_0_24px_rgba(31,26,103,0.05)]">
+        
+        {/* Hospital Branding */}
+        <div className="h-[72px] flex items-center px-6 shrink-0 border-b border-white/10 bg-[#1F1A67]">
+          <Image 
+            src="/logo.png" 
+            alt="Sahyadri Hospital Logo" 
+            width={32} 
+            height={32} 
+            className="object-contain mr-3 shrink-0" 
+          />
+          <div className="flex flex-col justify-center">
+            <span className="text-white font-bold tracking-tight text-[15px] leading-tight">SAHYADRI</span>
+            <span className="text-[#00A3E0] text-[10px] font-bold tracking-widest uppercase leading-tight">Hospital</span>
+          </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">
-          <div className="px-3 mb-2 text-xs font-semibold text-brand-400 uppercase tracking-wider">
-            Departments
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto py-6 space-y-1">
+          <div className="px-6 mb-3 text-[10px] font-bold text-[#F4F0F8]/50 uppercase tracking-widest">
+            Hospital Operations
           </div>
-          {navLinks.map((link) => {
-            const isActive = pathname.startsWith(link.href);
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`flex items-center px-3 py-2.5 rounded-lg transition-colors group ${
-                  isActive
-                    ? "bg-brand-600 text-white font-medium"
-                    : "text-brand-100 hover:bg-brand-800 hover:text-white"
-                }`}
-              >
-                <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-brand-300 group-hover:text-white"}`} />
-                {link.name}
-              </Link>
-            );
-          })}
+          
+          <div className="flex flex-col space-y-0.5">
+            {navLinks.map((link) => {
+              // Active state logic handles nested routes (e.g., /admin and /admin/staff both highlight "Admin Setup")
+              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              const Icon = link.icon;
+              
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`flex items-center px-6 py-3 transition-colors ${
+                    isActive
+                      ? "bg-[#3B3486] text-white border-l-[3px] border-[#00A3E0]"
+                      : "text-[#F4F0F8]/70 hover:bg-white/5 hover:text-white border-l-[3px] border-transparent"
+                  }`}
+                >
+                  <Icon className={`w-[18px] h-[18px] mr-3 shrink-0 transition-colors ${isActive ? "text-[#00A3E0]" : "text-[#F4F0F8]/50"}`} />
+                  <span className="font-medium text-[14px]">{link.name}</span>
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
-        <div className="p-4 border-t border-brand-800">
+        {/* Bottom User Profile & Logout */}
+        <div className="p-4 border-t border-white/10 shrink-0 bg-black/10">
+          <div className="flex items-center gap-3 px-2 mb-4">
+            <div className="w-9 h-9 rounded-full bg-[#3B3486] flex items-center justify-center shrink-0 border border-white/10">
+              <span className="text-white text-xs font-bold tracking-wider">AU</span>
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-white font-medium text-sm truncate">Admin User</span>
+              <span className="text-[#00A3E0] text-[10px] font-bold tracking-wider uppercase truncate">Super Administrator</span>
+            </div>
+          </div>
           <Link
             href="/login"
-            className="flex items-center px-3 py-2 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white transition-colors"
+            className="flex items-center justify-center w-full py-2.5 rounded text-[#F4F0F8]/70 hover:bg-white/10 hover:text-white transition-colors text-sm font-medium"
           >
-            <LogOut className="w-5 h-5 mr-3" />
+            <LogOut className="w-4 h-4 mr-2" /> 
             Sign Out
           </Link>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* ================= MAIN LAYOUT AREA ================= */}
+      <div className="flex-1 flex flex-col min-w-0">
+        
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-10 shadow-sm">
-          <div className="flex items-center flex-1">
-            <div className="relative w-96">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+        <header className="h-[72px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
+          
+          {/* Search */}
+          <div className="flex items-center flex-1 max-w-md">
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-[#6F6B7D] absolute left-3 top-1/2 transform -translate-y-1/2" />
               <input 
                 type="text" 
-                placeholder="Search patient by UHID or Name..." 
-                className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all"
+                placeholder="Search patient, staff, or department..." 
+                className="w-full pl-10 pr-4 py-2 bg-[#F7F8FC] border border-[#EAEAEA] rounded text-sm text-[#2B2B2B] focus:outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-[#6F6B7D]/70"
               />
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-slate-400 hover:text-brand-600 transition-colors">
+          {/* Right Actions & Header Profile */}
+          <div className="flex items-center space-x-6">
+            <button className="relative text-[#6F6B7D] hover:text-[#1F1A67] transition-colors focus:outline-none">
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+              {/* Subtle Magenta notification dot */}
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#C61A4C] rounded-full ring-2 ring-white"></span>
             </button>
-            <div className="w-px h-6 bg-slate-200 mx-2"></div>
-            <div className="flex items-center cursor-pointer">
-              <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold text-sm border border-brand-200">
-                JD
+            
+            <div className="w-px h-5 bg-[#EAEAEA]"></div>
+            
+            <div className="flex items-center gap-3 cursor-pointer group">
+              <div className="hidden md:flex flex-col text-right">
+                <span className="text-[13px] font-semibold text-[#1F1A67] leading-tight">Admin User</span>
+                <span className="text-[10px] text-[#6F6B7D] font-bold uppercase tracking-wider">Super Admin</span>
               </div>
-              <div className="ml-3 text-sm">
-                <p className="font-medium text-slate-700">Dr. John Doe</p>
-                <p className="text-xs text-slate-500">Cardiology</p>
+              <div className="w-8 h-8 rounded-full bg-[#F4F0F8] flex items-center justify-center text-[#1F1A67] border border-[#EAEAEA] group-hover:border-[#3B3486] transition-colors shrink-0">
+                <span className="text-xs font-bold">AU</span>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Page Content Rendered Here */}
-        <main className="flex-1 overflow-y-auto bg-surface p-6">
+        {/* Scrollable Content Area */}
+        <main className="flex-1 overflow-y-auto w-full relative">
           {children}
         </main>
+
       </div>
     </div>
   );
