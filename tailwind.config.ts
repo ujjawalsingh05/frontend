@@ -9,19 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-        },
-      }
+        hospital: {
+          primary: "#30256F",    // Deep Purple
+          secondary: "#66549A",  // Secondary Purple
+          accent: "#C51F63",     // Magenta (Use sparingly)
+          blue: "#1769AA",       // Healthcare Blue
+          lavender: "#F4F0F8",   // Light Lavender
+          bg: "#FAF9FC",         // Very Light Background
+          text: "#25233A",       // Main Text
+          muted: "#6F6B7D",      // Muted Text
+        }
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+      },
     },
   },
   plugins: [],
