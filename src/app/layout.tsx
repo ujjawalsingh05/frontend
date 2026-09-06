@@ -6,8 +6,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MediFlow - Hospital Management System",
+  title: "Sahyadri Hospital - Management System",
   description: "Modern healthcare management platform",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

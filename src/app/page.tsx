@@ -87,9 +87,13 @@ export default function HomePage() {
           {/* Left: Brand Identity */}
           <div className="flex-1 flex justify-start">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="flex items-center justify-center w-8 h-8 bg-hospital-teal rounded-sm">
-                <div className="w-3 h-3 bg-hospital-gold rounded-full"></div>
-              </div>
+              <Image 
+                src="/logo.png" 
+                alt="Sahyadri Hospital Logo" 
+                width={40} 
+                height={40} 
+                className="object-contain"
+              />
               <span className="text-xl font-bold text-hospital-primary tracking-tight">
                 SAHYADRI HOSPITAL
               </span>
@@ -279,12 +283,10 @@ export default function HomePage() {
           </div>
         </section>
 
- {/* ================= MONITOR / CONNECTED CARE SECTION ================= */}
+        {/* ================= MONITOR / CONNECTED CARE SECTION ================= */}
         <section id="about" className="w-full max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28 border-t border-hospital-border">
-          {/* CHANGED: Removed md:items-start to ensure vertical centering */}
           <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-16">
             
-            {/* CHANGED: Added aspect-[4/5] and overflow-hidden to crop the height cleanly */}
             <div className="w-full max-w-[260px] md:max-w-[300px] lg:max-w-[340px] shrink-0 aspect-[4/5] rounded-md border border-hospital-border overflow-hidden shadow-sm">
               <Image 
                 src="/monitor.jpg" 
@@ -296,7 +298,6 @@ export default function HomePage() {
               />
             </div>
 
-            {/* CHANGED: Removed pt-2 / pt-4 so the text isn't pushed down artificially */}
             <div className="flex-1 flex flex-col items-start justify-center">
               <span className="text-hospital-secondary text-xs font-bold tracking-widest uppercase mb-4">
                 Connected Care
@@ -333,7 +334,7 @@ export default function HomePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-12">
               <div className="flex flex-col items-center">
-                <span className="text-hospital-secondary font-bold mb-2">Shayadri Hospital</span>
+                <span className="text-hospital-secondary font-bold mb-2">Sahyadri Hospital</span>
                 <span className="text-hospital-charcoal text-[15px]">123 Health Avenue<br/>Medical District, MH 400001</span>
               </div>
               <div className="flex flex-col items-center">
@@ -342,7 +343,7 @@ export default function HomePage() {
               </div>
               <div className="flex flex-col items-center">
                 <span className="text-hospital-secondary font-bold mb-2">Email</span>
-                <span className="text-hospital-charcoal text-[15px]">contact@shayadri.com<br/>support@shayadri.com</span>
+                <span className="text-hospital-charcoal text-[15px]">contact@sahyadri.com<br/>support@sahyadri.com</span>
               </div>
             </div>
 
@@ -358,12 +359,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-start gap-12 md:gap-8 mb-16">
           
           <div className="flex flex-col max-w-xs">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 bg-hospital-teal rounded-sm flex items-center justify-center">
-                <div className="w-2 h-2 bg-hospital-gold rounded-full"></div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 relative bg-white/10 rounded-sm flex items-center justify-center p-1">
+                <Image 
+                  src="/logo.png" 
+                  alt="Sahyadri Hospital Logo" 
+                  fill
+                  className="object-contain p-1"
+                />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
-                SHAYADRI HOSPITAL
+                SAHYADRI HOSPITAL
               </span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
