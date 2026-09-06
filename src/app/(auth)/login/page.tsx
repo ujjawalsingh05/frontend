@@ -2,97 +2,113 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Activity, Mail, Lock, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [role, setRole] = useState("doctor");
-  const [staffId, setStaffId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
 
-    // Save a mock session token so AuthContext picks it up
-    localStorage.setItem("hms_auth_token", "mock_jwt_token_123");
-    localStorage.setItem("hms_user", JSON.stringify({ id: staffId || "DOC-001", name: "Staff Member", role }));
-
+    // Simulate API delay
     setTimeout(() => {
-      setLoading(false);
-      // Directly push to the chosen role route
-      router.push(`/${role}`);
-    }, 400);
+      // Mock successful login
+      login("mock-jwt-token-123", {
+        id: "DOC-10492",
+        name: "Dr. James Wilson",
+        role: "doctor"
+      });
+      
+      router.push("/doctor");
+    }, 800);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 text-blue-600 mb-3 border border-blue-100">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 4v16m8-8H4" />
-            </svg>
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl text-blue-600 mb-4 border border-blue-100">
+            <Activity className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">MediFlow Portal</h1>
-          <p className="text-sm text-slate-500 mt-1">Hospital Information & Staff Management System</p>
+          <p className="text-sm text-slate-500 mt-2">Enter your credentials to access your account.</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-              Staff Role
+            <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">
+              Email Address
             </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm transition-colors outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="doctor">Doctor / Clinician</option>
-              <option value="nurse">Nurse / Ward Staff</option>
-              <option value="reception">Reception / Front Desk</option>
-              <option value="pharmacy">Pharmacy</option>
-              <option value="laboratory">Diagnostic Lab</option>
-              <option value="admin">System Administrator</option>
-            </select>
+            <div className="relative">
+              <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="staff@mediflow.local"
+                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-              Staff ID / Email
-            </label>
-            <input
-              type="text"
-              required
-              value={staffId}
-              onChange={(e) => setStaffId(e.target.value)}
-              placeholder="e.g. DOC-10492"
-              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm transition-colors outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm transition-colors outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="flex justify-between items-center mb-2">
+              <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                Password
+              </label>
+              <a href="/reset-password" className="text-[10px] font-bold text-slate-400 hover:text-blue-600 uppercase tracking-wider transition-colors">
+                Forgot Password?
+              </a>
+            </div>
+            <div className="relative">
+              <Lock className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              />
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 shadow-sm cursor-pointer"
+            disabled={isLoading}
+            className="w-full py-3.5 bg-[#1a365d] text-white font-bold rounded-xl hover:bg-blue-900 transition-colors shadow-sm flex justify-center items-center group disabled:opacity-70"
           >
-            {loading ? "Authenticating..." : "Sign In to Portal"}
+            {isLoading ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Authenticating...
+              </span>
+            ) : (
+              <span className="flex items-center">
+                Sign In <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </span>
+            )}
           </button>
         </form>
+        
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <div className="bg-slate-50 rounded-xl p-4 text-xs text-slate-500">
+            <p className="font-bold text-slate-700 mb-1">Demo Access Credentials:</p>
+            <p>Email: <span className="font-medium text-slate-900">any@email.com</span></p>
+            <p>Password: <span className="font-medium text-slate-900">any-password</span></p>
+          </div>
+        </div>
       </div>
     </div>
   );

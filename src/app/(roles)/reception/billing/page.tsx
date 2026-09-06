@@ -1,157 +1,140 @@
 "use client";
 
-import { useState } from "react";
-import { CreditCard, Printer, Plus, Trash2, Search } from "lucide-react";
+import { Search, Calendar, Scan, FileText, ChevronDown } from "lucide-react";
 
-export default function BillingPage() {
-  // State for dynamic invoice items
-  const [invoiceItems, setInvoiceItems] = useState([
-    { id: 1, service: "OPD Consultation - Dr. Doe", qty: 1, price: 500 },
-    { id: 2, service: "Complete Blood Count (CBC)", qty: 1, price: 350 },
-  ]);
-
-  // Derived state for calculations (Auto-updates when invoiceItems change)
-  const subtotal = invoiceItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
-  const tax = subtotal * 0.05; // 5% standard tax
-  const totalAmount = subtotal + tax;
-
-  // Handlers for modifying the invoice table
-  const addServiceLine = () => {
-    const newItem = { id: Date.now(), service: "", qty: 1, price: 0 };
-    setInvoiceItems([...invoiceItems, newItem]);
-  };
-
-  const removeServiceLine = (id: number) => {
-    setInvoiceItems(invoiceItems.filter(item => item.id !== id));
-  };
-
-  const updateItem = (id: number, field: string, value: string | number) => {
-    setInvoiceItems(invoiceItems.map(item => 
-      item.id === id ? { ...item, [field]: value } : item
-    ));
-  };
-
+export default function BillingDashboard() {
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Billing & Invoicing</h1>
-          <p className="text-sm text-slate-500">Generate invoices and process payments.</p>
-        </div>
+    <div className="max-w-6xl mx-auto space-y-6 pb-12">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-900">Billing & Invoicing</h1>
+        <p className="text-sm text-slate-500 mt-1">Generate invoices and process payments for hospital services.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Invoice Generator Form */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm p-6">
-          <h2 className="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">New Invoice</h2>
+        {/* Left Column: Invoice Form */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+          <h2 className="text-lg font-bold text-slate-900 mb-6">New Invoice</h2>
           
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            <div>
+              <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">Select Patient</label>
               <div className="relative">
-                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Select Patient</label>
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-[34px]" />
-                <input type="text" className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all" placeholder="Search UHID or Name..." />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Invoice Date</label>
-                <input type="date" className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none" defaultValue={new Date().toISOString().split('T')[0]} />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2"/>
+                <input type="text" placeholder="Search UHID or Name..." className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
             </div>
-
-            {/* Dynamic Services Table */}
-            <div className="border border-slate-200 rounded-lg overflow-hidden mt-6">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
-                  <tr>
-                    <th className="px-4 py-3 font-semibold">Service Details</th>
-                    <th className="px-4 py-3 font-semibold w-24">Qty</th>
-                    <th className="px-4 py-3 font-semibold w-32 text-right">Price (₹)</th>
-                    <th className="px-4 py-3 font-semibold w-12 text-center"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {invoiceItems.map((item) => (
-                    <tr key={item.id} className="group hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-2">
-                        <input 
-                          type="text" 
-                          value={item.service}
-                          onChange={(e) => updateItem(item.id, 'service', e.target.value)}
-                          placeholder="Enter service name..."
-                          className="w-full bg-transparent outline-none focus:border-b-2 focus:border-brand-500 py-1" 
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input 
-                          type="number" 
-                          min="1"
-                          value={item.qty}
-                          onChange={(e) => updateItem(item.id, 'qty', parseInt(e.target.value) || 0)}
-                          className="w-full bg-transparent outline-none py-1" 
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input 
-                          type="number" 
-                          min="0"
-                          value={item.price}
-                          onChange={(e) => updateItem(item.id, 'price', parseInt(e.target.value) || 0)}
-                          className="w-full bg-transparent outline-none text-right py-1" 
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <button 
-                          onClick={() => removeServiceLine(item.id)}
-                          className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button 
-                onClick={addServiceLine}
-                className="w-full py-3 bg-slate-50 text-brand-600 text-xs font-bold uppercase tracking-wider hover:bg-slate-100 transition-colors flex items-center justify-center border-t border-slate-200"
-              >
-                <Plus className="w-4 h-4 mr-2" /> Add Service Line
-              </button>
+            <div>
+              <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">Invoice Date</label>
+              <div className="relative">
+                <Calendar className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2"/>
+                <input type="text" value="04/09/2026" readOnly className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm outline-none text-slate-600" />
+              </div>
             </div>
           </div>
+
+          <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-3">Service Details</label>
+          <table className="w-full text-left mb-6">
+            <thead className="border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase">
+              <tr>
+                <th className="py-3">SERVICE DETAILS</th>
+                <th className="py-3 text-center">QTY</th>
+                <th className="py-3 text-right">PRICE (₹)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              <tr>
+                <td className="py-4">
+                  <div className="font-bold text-slate-900 text-sm">OPD Consultation – Dr. Doe</div>
+                  <div className="text-xs text-slate-500 mt-0.5">Cardiology Department</div>
+                </td>
+                <td className="py-4 text-center font-bold text-slate-900">1</td>
+                <td className="py-4 text-right font-bold text-slate-900">500.00</td>
+              </tr>
+              <tr>
+                <td className="py-4">
+                  <div className="font-bold text-slate-900 text-sm">Complete Blood Count (CBC)</div>
+                  <div className="text-xs text-slate-500 mt-0.5">Pathology Lab</div>
+                </td>
+                <td className="py-4 text-center font-bold text-slate-900">1</td>
+                <td className="py-4 text-right font-bold text-slate-900">350.00</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button className="w-full py-4 border-2 border-dashed border-slate-200 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors tracking-wider uppercase">
+            Add Service Line
+          </button>
         </div>
 
-        {/* Real-time Payment Summary */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 sticky top-6">
-            <h2 className="text-lg font-bold text-slate-800 mb-4">Payment Summary</h2>
+        {/* Right Column: Payment & History */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h3 className="text-lg font-bold text-slate-900 mb-6">Payment Summary</h3>
             
-            <div className="space-y-3 text-sm text-slate-600 border-b border-slate-100 pb-4 mb-4">
-              <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span>Tax (5%)</span><span>₹{tax.toFixed(2)}</span></div>
-              <div className="flex justify-between font-bold text-slate-900 text-lg pt-3 mt-1 border-t border-slate-100">
-                <span>Total Amount</span>
-                <span className="text-brand-700">₹{totalAmount.toFixed(2)}</span>
+            <div className="space-y-3 mb-6 border-b border-slate-100 pb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Subtotal</span>
+                <span className="font-bold text-slate-900">₹850.00</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Tax (5%)</span>
+                <span className="font-bold text-slate-900">₹42.50</span>
               </div>
             </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Payment Method</label>
-                <select className="w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+
+            <div className="flex justify-between items-center mb-8">
+              <span className="text-sm font-bold text-slate-900">Total Amount</span>
+              <span className="text-3xl font-bold text-[#1a365d]">₹892.50</span>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2">Payment Method</label>
+              <div className="relative">
+                <select className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm outline-none appearance-none font-medium text-slate-700">
                   <option>UPI / Digital Wallet</option>
-                  <option>Credit/Debit Card</option>
-                  <option>Cash</option>
-                  <option>Insurance Claim</option>
                 </select>
+                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"/>
               </div>
-              
-              <button className="w-full py-3 bg-brand-600 text-white font-bold rounded-lg text-sm hover:bg-brand-700 transition-colors shadow-sm flex items-center justify-center">
-                <CreditCard className="w-4 h-4 mr-2" /> Process Payment
-              </button>
-              <button className="w-full py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-lg text-sm hover:bg-slate-50 transition-colors flex items-center justify-center">
-                <Printer className="w-4 h-4 mr-2" /> Print Invoice
-              </button>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl flex items-center space-x-4 mb-6">
+              <div className="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-blue-600">
+                <Scan className="w-5 h-5"/>
+              </div>
+              <div>
+                <div className="text-sm font-bold text-slate-900">UPI Payment Active</div>
+                <div className="text-[10px] text-slate-400 mt-0.5">Scan QR code at reception</div>
+              </div>
+            </div>
+
+            <button className="w-full py-3.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+              Print Invoice
+            </button>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+            <h3 className="text-sm font-bold text-slate-900 mb-4">Recent Invoices</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 border border-slate-100 rounded-xl hover:border-slate-200 cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400"><FileText className="w-4 h-4"/></div>
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs">INV-2094</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">John Doe • ₹1,200.00</div>
+                  </div>
+                </div>
+                <span className="text-slate-400">&gt;</span>
+              </div>
+              <div className="flex justify-between items-center p-3 border border-slate-100 rounded-xl hover:border-slate-200 cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400"><FileText className="w-4 h-4"/></div>
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs">INV-2093</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">Sarah J. • ₹850.00</div>
+                  </div>
+                </div>
+                <span className="text-slate-400">&gt;</span>
+              </div>
             </div>
           </div>
         </div>

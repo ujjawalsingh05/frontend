@@ -29,16 +29,16 @@ export default function StaffManagement() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 pb-12">
       {/* Header Area */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Staff Management</h1>
-          <p className="text-sm text-slate-500">Manage employee credentials, roles, and system access.</p>
+          <p className="text-sm text-slate-500 mt-1">Manage employee credentials, roles, and system access.</p>
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="flex items-center px-4 py-2 bg-brand-500 text-white rounded-lg text-sm font-semibold hover:bg-brand-600 transition-colors shadow-sm"
+          className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 text-sm shadow-sm transition-colors flex items-center"
         >
           <UserPlus className="w-4 h-4 mr-2" /> Add New Staff
         </button>
