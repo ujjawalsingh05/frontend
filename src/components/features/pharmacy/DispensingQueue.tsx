@@ -6,46 +6,84 @@ interface DispensingQueueProps {
 }
 
 export function DispensingQueue({ queue, onProcess }: DispensingQueueProps) {
+  
+  // Helpers for exact uppercase status logic
+  const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "PENDING":
+        return "bg-[#FFF3E0] text-[#E65100] border-[#E65100]/20";
+      case "READY FOR PICKUP":
+        return "bg-[#E6F6FD] text-[#00A3E0] border-[#00A3E0]/20";
+      case "URGENT":
+        return "bg-[#FDF0F4] text-[#C61A4C] border-[#C61A4C]/20";
+      case "DISPENSED":
+        return "bg-[#ECFDF5] text-[#16A34A] border-[#16A34A]/20";
+      default:
+        return "bg-[#F7F8FC] text-[#6F6B7D] border-[#EAEAEA]";
+    }
+  };
+
+  const getActionLabel = (status: string) => {
+    if (status === "PENDING") return "Process Rx";
+    if (status === "READY FOR PICKUP" || status === "URGENT") return "Dispense";
+    if (status === "DISPENSED") return "Completed";
+    return "Process";
+  };
+
+  if (!queue || queue.length === 0) {
+    return (
+      <div className="p-12 text-center text-[13px] text-[#6F6B7D]">
+        No prescriptions found matching your search.
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm text-slate-600">
-        <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase text-xs font-semibold">
+      <table className="w-full text-left border-collapse min-w-[800px]">
+        <thead className="bg-[#F7F8FC] border-b border-[#EAEAEA]">
           <tr>
-            <th className="px-6 py-4">RX ID / Time</th>
-            <th className="px-6 py-4">Patient Info</th>
-            <th className="px-6 py-4">Prescribed By</th>
-            <th className="px-6 py-4">Status</th>
-            <th className="px-6 py-4 text-right">Action</th>
+            <th className="px-6 py-4 text-[11px] font-bold text-[#00A3E0] uppercase tracking-wider">RX ID / TIME</th>
+            <th className="px-6 py-4 text-[11px] font-bold text-[#00A3E0] uppercase tracking-wider">PATIENT INFO</th>
+            <th className="px-6 py-4 text-[11px] font-bold text-[#00A3E0] uppercase tracking-wider">PRESCRIBED BY</th>
+            <th className="px-6 py-4 text-[11px] font-bold text-[#00A3E0] uppercase tracking-wider">STATUS</th>
+            <th className="px-6 py-4 text-[11px] font-bold text-[#00A3E0] uppercase tracking-wider text-right">ACTION</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 bg-white">
+        <tbody className="divide-y divide-[#EAEAEA]">
           {queue.map((rx) => (
-            <tr key={rx.id} className="hover:bg-slate-50 transition-colors">
-              <td className="px-6 py-4">
-                <div className="font-bold text-slate-900">{rx.id}</div>
-                <div className="text-xs text-slate-500 mt-1">{rx.time}</div>
+            <tr key={rx.id} className="hover:bg-[#F7F8FC] transition-colors bg-[#FFFFFF]">
+              
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="font-bold text-[#1F1A67] text-[14px] leading-tight">{rx.id}</div>
+                <div className="text-[12px] font-medium text-[#6F6B7D] mt-0.5">{rx.time}</div>
               </td>
-              <td className="px-6 py-4">
-                <div className="font-medium text-slate-800">{rx.patient}</div>
-                <div className="text-xs text-slate-500 mt-1">{rx.items} items</div>
+              
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="font-bold text-[#2B2B2B] text-[14px] leading-tight">{rx.patient}</div>
+                <div className="text-[12px] font-medium text-[#6F6B7D] mt-0.5">{rx.items}</div>
               </td>
-              <td className="px-6 py-4 text-slate-600">{rx.doctor}</td>
-              <td className="px-6 py-4">
-                <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold ${
-                  rx.status === 'Ready for Pickup' ? 'bg-blue-50 text-blue-700' : 'bg-orange-50 text-orange-700'
-                }`}>
+              
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="text-[13px] font-semibold text-[#6F6B7D]">{rx.doctor}</span>
+              </td>
+              
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`inline-flex items-center px-2.5 py-1 rounded border text-[11px] font-bold uppercase tracking-wider ${getStatusStyles(rx.status)}`}>
                   {rx.status}
                 </span>
               </td>
-              <td className="px-6 py-4 text-right">
+              
+              <td className="px-6 py-4 whitespace-nowrap text-right">
                 <button 
                   onClick={() => onProcess(rx.id)}
-                  disabled={rx.status === 'Ready for Pickup'}
-                  className="px-4 py-2 bg-white border border-slate-200 text-brand-600 rounded-lg text-sm font-semibold hover:bg-brand-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={rx.status === "DISPENSED"}
+                  className="inline-flex items-center px-4 py-2 bg-[#1F1A67] text-[#FFFFFF] rounded-md text-[12px] font-bold hover:bg-[#3B3486] transition-colors focus:outline-none disabled:bg-[#F4F0F8] disabled:text-[#6F6B7D] disabled:cursor-not-allowed shadow-sm disabled:shadow-none"
                 >
-                  {rx.status === 'Ready for Pickup' ? 'Dispense' : 'Process Rx'}
+                  {getActionLabel(rx.status)}
                 </button>
               </td>
+
             </tr>
           ))}
         </tbody>

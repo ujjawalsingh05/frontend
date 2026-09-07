@@ -1,121 +1,133 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Settings, Users, History, UserPlus, HelpCircle } from "lucide-react";
+import { Search, Settings, Users, History, HelpCircle } from "lucide-react";
+import { PatientRegistrationForm } from "@/components/features/reception/PatientRegistrationForm";
 
 export default function ReceptionDashboard() {
-  const [formData, setFormData] = useState({ name: "", age: "", gender: "Male", phone: "" });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const recentRegistrations = [
-    { initials: "JD", name: "Jane Doe", id: "OPD-998", time: "2 mins ago", color: "bg-blue-100 text-blue-700" },
-    { initials: "RK", name: "Robert King", id: "OPD-997", time: "15 mins ago", color: "bg-yellow-100 text-yellow-700" },
-    { initials: "AM", name: "Alice Miller", id: "OPD-996", time: "1 hour ago", color: "bg-slate-100 text-slate-700" },
+    { initials: "JD", name: "Jane Doe", id: "OPD-998", time: "2 mins ago" },
+    { initials: "RK", name: "Robert King", id: "OPD-997", time: "15 mins ago" },
+    { initials: "AM", name: "Alice Miller", id: "OPD-996", time: "1 hour ago" },
   ];
 
+  // Local search filtering
+  const filteredRegistrations = recentRegistrations.filter(
+    (reg) =>
+      reg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.id.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
-      {/* Top Header Bar */}
-      <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-        <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-            <Users className="w-5 h-5" />
+    <div className="w-full px-6 py-6 md:px-8 max-w-[1600px] mx-auto space-y-6 text-[#2B2B2B]">
+      
+      {/* ================= HEADER ================= */}
+      <div className="bg-[#FFFFFF] p-5 md:p-6 rounded-lg border border-[#EAEAEA] shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-md bg-[#F4F0F8] flex items-center justify-center shrink-0 border border-[#EAEAEA]">
+            <Users className="w-5 h-5 text-[#00A3E0]" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Front Desk Portal</h1>
-            <p className="text-xs text-slate-500">Walk-ins today: <span className="font-bold text-blue-600">14</span> | Emergency Admissions: <span className="font-bold text-red-500">02</span></p>
+            <h1 className="text-xl font-bold text-[#1F1A67] tracking-tight">Front Desk Portal</h1>
+            <p className="text-[13px] text-[#6F6B7D] mt-0.5">
+              Manage patient registration, appointments, and front-desk operations.
+            </p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-            <input type="text" placeholder="Search Patient ID..." className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 w-64" />
+
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+          {/* Operational Summary */}
+          <div className="flex items-center gap-3 text-[13px] font-medium bg-[#F7F8FC] px-3 py-1.5 rounded-md border border-[#EAEAEA]">
+            <span className="text-[#6F6B7D]">
+              Walk-ins today: <span className="font-bold text-[#00A3E0] ml-1">14</span>
+            </span>
+            <span className="text-[#EAEAEA]">|</span>
+            <span className="text-[#6F6B7D]">
+              Emergency: <span className="font-bold text-[#C61A4C] ml-1">02</span>
+            </span>
           </div>
-          <button className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600"><Settings className="w-5 h-5" /></button>
+
+          <div className="relative w-full sm:w-64">
+            <Search className="w-4 h-4 text-[#6F6B7D] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search Patient ID or Name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-[#F7F8FC] border border-[#EAEAEA] rounded-md text-[13px] text-[#2B2B2B] focus:outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-colors placeholder:text-[#6F6B7D]/70"
+            />
+          </div>
+          
+          <button className="p-2 bg-[#FFFFFF] border border-[#EAEAEA] rounded-md text-[#6F6B7D] hover:bg-[#F7F8FC] hover:text-[#1F1A67] transition-colors focus:outline-none shrink-0 shadow-sm">
+            <Settings className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
+      {/* ================= MAIN LAYOUT ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         {/* Left Column: Registration Form */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-          <div className="flex items-center space-x-4 mb-8">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 border border-blue-100">
-              <UserPlus className="w-6 h-6" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900">Register New Patient (OPD)</h2>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Mandatory Information Required</p>
-            </div>
-          </div>
-
-          <form className="space-y-6">
-            <div>
-              <label className="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Full Name</label>
-              <input type="text" value="John Doe" readOnly className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Age</label>
-                <input type="text" value="32" readOnly className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Gender</label>
-                <select className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none appearance-none">
-                  <option>Male</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Phone Number</label>
-              <input type="text" value="+91 98765 43210" readOnly className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none" />
-            </div>
-
-            <div className="flex items-center space-x-4 pt-4">
-              <button type="button" className="flex-1 bg-[#1a365d] text-white py-3.5 rounded-xl font-bold flex justify-center items-center hover:bg-blue-900 transition-colors">
-                <UserPlus className="w-4 h-4 mr-2" /> Complete Registration
-              </button>
-              <button type="button" className="px-8 py-3.5 border border-slate-200 text-slate-500 font-bold rounded-xl hover:bg-slate-50 transition-colors">
-                Cancel
-              </button>
-            </div>
-          </form>
+        <div className="lg:col-span-2">
+          <PatientRegistrationForm />
         </div>
 
         {/* Right Column: Sidebar Panels */}
         <div className="space-y-6">
+          
           {/* Recent Registrations */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Recent Registrations</h3>
-              <History className="w-4 h-4 text-blue-500" />
+          <div className="bg-[#FFFFFF] border border-[#EAEAEA] rounded-lg shadow-sm flex flex-col">
+            <div className="p-5 border-b border-[#EAEAEA] flex justify-between items-center bg-[#FFFFFF]">
+              <h3 className="text-[13px] font-bold text-[#1F1A67] uppercase tracking-wider">
+                Recent Registrations
+              </h3>
+              <History className="w-4 h-4 text-[#00A3E0]" />
             </div>
-            <div className="space-y-4">
-              {recentRegistrations.map((reg, i) => (
-                <div key={i} className="flex items-center space-x-4 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors bg-slate-50/50">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${reg.color}`}>
-                    {reg.initials}
+            
+            <div className="p-5 space-y-3">
+              {filteredRegistrations.length > 0 ? (
+                filteredRegistrations.map((reg, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center space-x-4 p-3 rounded-md border border-[#EAEAEA] hover:border-[#1F1A67]/30 hover:bg-[#F7F8FC] transition-colors bg-[#FFFFFF]"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#F4F0F8] flex items-center justify-center font-bold text-sm text-[#1F1A67] border border-[#EAEAEA] shrink-0">
+                      {reg.initials}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[#1F1A67] text-[14px] leading-tight">
+                        {reg.name}
+                      </span>
+                      <span className="text-[12px] font-medium text-[#6F6B7D] mt-0.5 uppercase tracking-wider">
+                        {reg.id} <span className="mx-1 lowercase text-[#6F6B7D]/70">•</span> {reg.time}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <div className="font-bold text-slate-900 text-sm">{reg.name}</div>
-                    <div className="text-xs text-slate-500">{reg.id} • {reg.time}</div>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-6 text-[13px] text-[#6F6B7D]">
+                  No recent registrations match your search.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
           {/* Support Ticket Block */}
-          <div className="bg-[#1a365d] rounded-2xl shadow-sm p-6 text-white relative overflow-hidden">
-            <HelpCircle className="absolute -bottom-4 -right-4 w-32 h-32 text-blue-800 opacity-50" />
+          <div className="bg-[#1F1A67] rounded-lg shadow-sm p-6 text-[#FFFFFF] relative overflow-hidden">
+            <HelpCircle className="absolute -bottom-4 -right-4 w-32 h-32 text-[#3B3486] opacity-50" />
             <div className="relative z-10">
               <h3 className="text-lg font-bold mb-2">Need Help?</h3>
-              <p className="text-sm text-blue-200 mb-6 leading-relaxed">Contact IT support for troubleshooting bio-metric integration or printer issues.</p>
-              <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold transition-colors">
+              <p className="text-[13px] text-[#EAEAEA] mb-6 leading-relaxed">
+                Contact IT support for troubleshooting biometric integration or printer issues.
+              </p>
+              <button className="w-full py-2.5 bg-[#FFFFFF]/10 hover:bg-[#3B3486] border border-[#FFFFFF]/20 rounded-md text-[13px] font-bold transition-colors focus:outline-none">
                 OPEN SUPPORT TICKET
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
