@@ -31,8 +31,8 @@ export default function LoginPage() {
       dr: { role: "doctor", route: "/doctor", mockId: "DOC-10492", mockName: "Dr. James Wilson" },
       nurse: { role: "nurse", route: "/nurse", mockId: "NUR-2084", mockName: "Nurse Sarah Jenkins" },
       reception: { role: "reception", route: "/reception", mockId: "REC-3012", mockName: "Front Desk Reception" },
-      pharmacist: { role: "pharmacist", route: "/pharmacist", mockId: "PHA-4055", mockName: "Pharmacy Department" },
-      lab: { role: "lab", route: "/lab", mockId: "LAB-5099", mockName: "Laboratory Technician" }
+      pharmacist: { role: "pharmacist", route: "/pharmacy", mockId: "PHA-4055", mockName: "Pharmacy Department" },
+      lab: { role: "lab", route: "/laboratory", mockId: "LAB-5099", mockName: "Laboratory Technician" }
     };
 
     const targetUser = roleMap[emailPrefix];
