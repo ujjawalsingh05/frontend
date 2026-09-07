@@ -22,44 +22,36 @@ export default function LoginPage() {
     setIsLoading(true);
 
     const normalizedEmail = email.trim().toLowerCase();
+    const emailPrefix = normalizedEmail.split('@')[0];
     
-    // 1. Role Detection Logic
-    let role = "";
-    let route = "";
-    let mockId = "";
-    let mockName = "";
+    // Scalable Role Routing Dictionary
+    const roleMap: Record<string, { role: string; route: string; mockId: string; mockName: string }> = {
+      staff: { role: "admin", route: "/admin", mockId: "ADM-1001", mockName: "Hospital Administration" },
+      admin: { role: "admin", route: "/admin", mockId: "ADM-1002", mockName: "System Administrator" },
+      dr: { role: "doctor", route: "/doctor", mockId: "DOC-10492", mockName: "Dr. James Wilson" },
+      nurse: { role: "nurse", route: "/nurse", mockId: "NUR-2084", mockName: "Nurse Sarah Jenkins" },
+      reception: { role: "reception", route: "/reception", mockId: "REC-3012", mockName: "Front Desk Reception" },
+      pharmacist: { role: "pharmacist", route: "/pharmacist", mockId: "PHA-4055", mockName: "Pharmacy Department" },
+      lab: { role: "lab", route: "/lab", mockId: "LAB-5099", mockName: "Laboratory Technician" }
+    };
 
-    if (normalizedEmail.startsWith("staff@")) {
-      role = "admin";
-      route = "/admin";
-      mockId = "ADM-1001";
-      mockName = "Hospital Administration";
-    } else if (normalizedEmail.startsWith("dr@")) {
-      role = "doctor";
-      route = "/doctor";
-      mockId = "DOC-10492";
-      mockName = "Dr. James Wilson";
-    } else if (normalizedEmail.startsWith("nurse@")) {
-      role = "nurse";
-      route = "/nurse";
-      mockId = "NUR-2084";
-      mockName = "Nurse Sarah Jenkins";
-    } else {
-      // Invalid role handling
+    const targetUser = roleMap[emailPrefix];
+
+    if (!targetUser) {
       setError("Unrecognized hospital role. Please use your registered staff email.");
       setIsLoading(false);
       return;
     }
 
-    // 2. Authentication Flow
+    // Authentication Flow
     setTimeout(() => {
       login("mock-jwt-token-123", {
-        id: mockId,
-        name: mockName,
-        role: role
+        id: targetUser.mockId,
+        name: targetUser.mockName,
+        role: targetUser.role
       });
       
-      router.push(route);
+      router.replace(targetUser.route);
     }, 800);
   };
 
@@ -197,24 +189,32 @@ export default function LoginPage() {
           {/* Demo Credentials Section */}
           <div className="mt-12 pt-8 border-t border-[#EAEAEA]">
             <h4 className="text-xs font-semibold text-[#6F6B7D] uppercase tracking-wider mb-4">
-              Demo Access
+              Demo Access (Any Password)
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
-                <span className="block text-[#25233A] font-medium mb-1">Administration</span>
-                <span className="text-[#6F6B7D]">staff@example.com</span>
-              </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
               <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
                 <span className="block text-[#25233A] font-medium mb-1">Doctors</span>
-                <span className="text-[#6F6B7D]">dr@example.com</span>
+                <span className="text-[#6F6B7D]">dr@</span>
               </div>
               <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
                 <span className="block text-[#25233A] font-medium mb-1">Nurses</span>
-                <span className="text-[#6F6B7D]">nurse@example.com</span>
+                <span className="text-[#6F6B7D]">nurse@</span>
               </div>
               <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
-                <span className="block text-[#25233A] font-medium mb-1">Global Password</span>
-                <span className="text-[#6F6B7D]">any-password</span>
+                <span className="block text-[#25233A] font-medium mb-1">Reception</span>
+                <span className="text-[#6F6B7D]">reception@</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Admin</span>
+                <span className="text-[#6F6B7D]">admin@</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Pharmacist</span>
+                <span className="text-[#6F6B7D]">pharmacist@</span>
+              </div>
+              <div className="p-3 bg-[#FAF9FC] rounded border border-[#EAEAEA]">
+                <span className="block text-[#25233A] font-medium mb-1">Laboratory</span>
+                <span className="text-[#6F6B7D]">lab@</span>
               </div>
             </div>
           </div>
