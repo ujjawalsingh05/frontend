@@ -20,10 +20,8 @@ import {
   LineChart
 } from "lucide-react";
 
-// Assuming your auth hook is located here based on standard patterns. Adjust the import path if necessary.
 import { useAuth } from "@/hooks/useAuth"; 
 
-// Dynamic initials generator for the avatar
 const getInitials = (name: string) => {
   if (!name) return "U";
   const parts = name.trim().split(" ");
@@ -33,7 +31,6 @@ const getInitials = (name: string) => {
   return name.substring(0, 2).toUpperCase();
 };
 
-// Existing role configuration architecture preserved
 const sidebarConfigs: Record<string, { title: string; user: { name: string; role: string }; links: any[] }> = {
   admin: {
     title: "HOSPITAL OPERATIONS",
@@ -87,7 +84,6 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
   const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Existing dynamic role routing logic
   const currentRole = pathname.split('/')[1] || 'admin';
   const config = sidebarConfigs[currentRole] || sidebarConfigs['admin'];
 
@@ -95,10 +91,10 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
     <div className="flex h-screen bg-[#F7F8FC] font-sans text-[#2B2B2B] overflow-hidden">
       
       {/* ================= MOBILE HEADER ================= */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1F1A67] z-50 flex items-center justify-between px-4 border-b border-[#3B3486]">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Sahyadri Hospital" width={28} height={28} className="object-contain" />
-          <span className="text-white font-bold tracking-tight text-base">SAHYADRI</span>
+      <div className="md:hidden fixed top-0 left-0 right-0 h-20 bg-[#1F1A67] z-50 flex items-center justify-between px-4 border-b border-[#3B3486]">
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="Sahyadri Hospital" width={40} height={40} className="object-contain" />
+          <span className="text-white font-extrabold tracking-tight text-xl">SAHYADRI</span>
         </div>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white p-2">
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -108,28 +104,31 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
       {/* ================= SIDEBAR ================= */}
       <aside className={`
         fixed md:static inset-y-0 left-0 z-40
-        w-[260px] bg-[#1F1A67] text-white flex flex-col shrink-0
+        w-[300px] bg-[#1F1A67] text-white flex flex-col shrink-0
         transform transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? "translate-x-0 pt-16" : "-translate-x-full md:translate-x-0 md:pt-0"}
+        ${isMobileMenuOpen ? "translate-x-0 pt-20" : "-translate-x-full md:translate-x-0 md:pt-0"}
       `}>
-        {/* Brand Area */}
-        <div className="hidden md:flex h-[72px] items-center px-6 border-b border-white/10 shrink-0 bg-[#1F1A67]">
-          <Image 
-            src="/logo.png" 
-            alt="Sahyadri Hospital Logo" 
-            width={32} 
-            height={32} 
-            className="object-contain mr-3 shrink-0" 
-          />
-          <div className="flex flex-col justify-center">
-            <span className="text-white font-bold tracking-tight text-[15px] leading-tight">SAHYADRI</span>
-            <span className="text-[#00A3E0] text-[10px] font-bold tracking-widest uppercase leading-tight">Hospital</span>
+        {/* Brand Area - Massively Increased */}
+        <div className="hidden md:flex h-[110px] items-center px-6 border-b border-white/10 shrink-0 bg-[#1F1A67]">
+          <div className="relative w-[72px] h-[72px] shrink-0 mr-4">
+            <Image 
+              src="/logo.png" 
+              alt="Sahyadri Hospital Logo" 
+              fill
+              sizes="72px"
+              priority
+              className="object-contain" 
+            />
+          </div>
+          <div className="flex flex-col justify-center mt-1">
+            <span className="text-white font-extrabold tracking-tight text-[32px] leading-none">SAHYADRI</span>
+            <span className="text-[#00A3E0] text-[13px] font-bold tracking-widest uppercase mt-1.5 leading-none">Hospital</span>
           </div>
         </div>
 
         {/* Dynamic Navigation */}
         <nav className="flex-1 overflow-y-auto py-6 space-y-1">
-          <div className="px-6 mb-3 text-[10px] font-bold text-[#F4F0F8]/50 uppercase tracking-widest">
+          <div className="px-6 mb-3 text-[11px] font-bold text-[#F4F0F8]/50 uppercase tracking-widest">
             {config.title}
           </div>
           
@@ -142,15 +141,15 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`flex items-center px-6 py-3 transition-colors ${
+                  className={`flex items-center px-6 py-3.5 transition-colors ${
                     isActive
                       ? "bg-[#3B3486] text-white border-l-[3px] border-[#00A3E0]"
                       : "text-[#F4F0F8]/70 hover:bg-white/5 hover:text-white border-l-[3px] border-transparent"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <Icon className={`w-[18px] h-[18px] mr-3 shrink-0 transition-colors ${isActive ? "text-[#00A3E0]" : "text-[#F4F0F8]/50"}`} />
-                  <span className="font-medium text-[14px]">{link.name}</span>
+                  <Icon className={`w-[20px] h-[20px] mr-3 shrink-0 transition-colors ${isActive ? "text-[#00A3E0]" : "text-[#F4F0F8]/50"}`} />
+                  <span className="font-medium text-[15px]">{link.name}</span>
                 </Link>
               );
             })}
@@ -158,16 +157,16 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
         </nav>
 
         {/* Dynamic User Profile & Logout */}
-        <div className="p-4 border-t border-white/10 shrink-0 bg-black/10">
+        <div className="p-5 border-t border-white/10 shrink-0 bg-black/10">
           <div className="flex items-center gap-3 px-2 mb-4">
-            <div className="w-9 h-9 rounded-full bg-[#3B3486] flex items-center justify-center shrink-0 border border-white/10">
-              <span className="text-white text-xs font-bold tracking-wider">
+            <div className="w-10 h-10 rounded-full bg-[#3B3486] flex items-center justify-center shrink-0 border border-white/10">
+              <span className="text-white text-sm font-bold tracking-wider">
                 {getInitials(config.user.name)}
               </span>
             </div>
             <div className="flex flex-col overflow-hidden">
               <span className="text-white font-medium text-sm truncate">{config.user.name}</span>
-              <span className="text-[#00A3E0] text-[10px] font-bold tracking-wider uppercase truncate">{config.user.role}</span>
+              <span className="text-[#00A3E0] text-[11px] font-bold tracking-wider uppercase truncate">{config.user.role}</span>
             </div>
           </div>
           <button
@@ -183,8 +182,8 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
       {/* ================= MAIN LAYOUT AREA ================= */}
       <div className="flex-1 flex flex-col min-w-0">
         
-        {/* Top Header */}
-        <header className="h-[72px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
+        {/* Top Header - Height matched to brand area */}
+        <header className="h-[110px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
           
           {/* Search */}
           <div className="flex items-center flex-1 max-w-md">
@@ -193,7 +192,7 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
               <input 
                 type="text" 
                 placeholder="Search patient, staff, or department..." 
-                className="w-full pl-10 pr-4 py-2 bg-[#F7F8FC] border border-[#EAEAEA] rounded-md text-sm text-[#2B2B2B] focus:outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-[#6F6B7D]/70"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#F7F8FC] border border-[#EAEAEA] rounded-md text-sm text-[#2B2B2B] focus:outline-none focus:border-[#1F1A67] focus:ring-1 focus:ring-[#1F1A67] transition-all placeholder:text-[#6F6B7D]/70"
               />
             </div>
           </div>
@@ -205,15 +204,15 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#C61A4C] rounded-full ring-2 ring-white"></span>
             </button>
             
-            <div className="w-px h-5 bg-[#EAEAEA]"></div>
+            <div className="w-px h-6 bg-[#EAEAEA]"></div>
             
             <div className="flex items-center gap-3 cursor-pointer group">
               <div className="hidden md:flex flex-col text-right">
-                <span className="text-[13px] font-semibold text-[#1F1A67] leading-tight">{config.user.name}</span>
-                <span className="text-[10px] text-[#6F6B7D] font-bold uppercase tracking-wider">{config.user.role}</span>
+                <span className="text-[14px] font-semibold text-[#1F1A67] leading-tight">{config.user.name}</span>
+                <span className="text-[11px] text-[#6F6B7D] font-bold uppercase tracking-wider">{config.user.role}</span>
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#3B3486] flex items-center justify-center text-white border border-[#EAEAEA] group-hover:border-[#1F1A67] transition-colors shrink-0">
-                <span className="text-xs font-bold">{getInitials(config.user.name)}</span>
+              <div className="w-10 h-10 rounded-full bg-[#3B3486] flex items-center justify-center text-white border border-[#EAEAEA] group-hover:border-[#1F1A67] transition-colors shrink-0">
+                <span className="text-sm font-bold">{getInitials(config.user.name)}</span>
               </div>
             </div>
           </div>
@@ -223,7 +222,6 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1 overflow-y-auto w-full relative">
           <div className="min-h-full flex flex-col">
             
-            {/* The individual page.tsx content injects here without excessive top padding */}
             <div className="flex-1">
               {children}
             </div>

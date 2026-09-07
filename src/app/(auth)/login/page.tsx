@@ -65,9 +65,9 @@ export default function LoginPage() {
             <Image 
               src="/logo.png" 
               alt="Sahyadri Hospital Logo" 
-              width={64} 
-              height={64}
-              className="w-16 h-16 object-contain mb-6"
+              width={100} 
+              height={100}
+              className="w-20 h-20 object-contain mb-6"
             />
             <h1 className="text-3xl font-bold text-[#1F1A67] tracking-tight mb-2">
               Sahyadri Hospital
