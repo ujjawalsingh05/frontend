@@ -91,10 +91,10 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
     <div className="flex h-screen bg-[#F7F8FC] font-sans text-[#2B2B2B] overflow-hidden">
       
       {/* ================= MOBILE HEADER ================= */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-20 bg-[#1F1A67] z-50 flex items-center justify-between px-4 border-b border-[#3B3486]">
-        <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="Sahyadri Hospital" width={40} height={40} className="object-contain" />
-          <span className="text-white font-extrabold tracking-tight text-xl">SAHYADRI</span>
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[#1F1A67] z-50 flex items-center justify-between px-4 border-b border-[#3B3486]">
+        <div className="flex items-center gap-2.5">
+          <Image src="/logo.png" alt="Sahyadri Hospital" width={32} height={32} className="object-contain" />
+          <span className="text-white font-extrabold tracking-tight text-lg">SAHYADRI</span>
         </div>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white p-2">
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -104,25 +104,25 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
       {/* ================= SIDEBAR ================= */}
       <aside className={`
         fixed md:static inset-y-0 left-0 z-40
-        w-[300px] bg-[#1F1A67] text-white flex flex-col shrink-0
+        w-[280px] bg-[#1F1A67] text-white flex flex-col shrink-0
         transform transition-transform duration-300 ease-in-out
-        ${isMobileMenuOpen ? "translate-x-0 pt-20" : "-translate-x-full md:translate-x-0 md:pt-0"}
+        ${isMobileMenuOpen ? "translate-x-0 pt-16" : "-translate-x-full md:translate-x-0 md:pt-0"}
       `}>
-        {/* Brand Area - Massively Increased */}
-        <div className="hidden md:flex h-[110px] items-center px-6 border-b border-white/10 shrink-0 bg-[#1F1A67]">
-          <div className="relative w-[72px] h-[72px] shrink-0 mr-4">
+        {/* Brand Area - Scaled Down Slightly */}
+        <div className="hidden md:flex h-[90px] items-center px-6 border-b border-white/10 shrink-0 bg-[#1F1A67]">
+          <div className="relative w-[56px] h-[56px] shrink-0 mr-3.5">
             <Image 
               src="/logo.png" 
               alt="Sahyadri Hospital Logo" 
               fill
-              sizes="72px"
+              sizes="56px"
               priority
               className="object-contain" 
             />
           </div>
-          <div className="flex flex-col justify-center mt-1">
-            <span className="text-white font-extrabold tracking-tight text-[32px] leading-none">SAHYADRI</span>
-            <span className="text-[#00A3E0] text-[13px] font-bold tracking-widest uppercase mt-1.5 leading-none">Hospital</span>
+          <div className="flex flex-col justify-center mt-0.5">
+            <span className="text-white font-extrabold tracking-tight text-[26px] leading-none">SAHYADRI</span>
+            <span className="text-[#00A3E0] text-[11px] font-bold tracking-widest uppercase mt-1 leading-none">Hospital</span>
           </div>
         </div>
 
@@ -183,7 +183,7 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header - Height matched to brand area */}
-        <header className="h-[110px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
+        <header className="h-[90px] bg-white border-b border-[#EAEAEA] flex items-center justify-between px-8 shrink-0 z-10">
           
           {/* Search */}
           <div className="flex items-center flex-1 max-w-md">
@@ -199,10 +199,12 @@ export default function RoleLayout({ children }: { children: React.ReactNode }) 
 
           {/* Right Actions & Header Profile */}
           <div className="flex items-center space-x-6">
-            <button className="relative text-[#6F6B7D] hover:text-[#1F1A67] transition-colors focus:outline-none">
+            
+            {/* UPDATED: Bell icon is now a Link routing to the dynamic role URL */}
+            <Link href={`/${currentRole}/notifications`} className="relative text-[#6F6B7D] hover:text-[#1F1A67] transition-colors focus:outline-none block">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#C61A4C] rounded-full ring-2 ring-white"></span>
-            </button>
+            </Link>
             
             <div className="w-px h-6 bg-[#EAEAEA]"></div>
             

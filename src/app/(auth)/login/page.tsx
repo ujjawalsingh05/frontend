@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
@@ -88,9 +89,17 @@ export default function LoginPage() {
       </div>
 
       {/* ================= RIGHT / LOGIN AREA ================= */}
-      <div className="w-full md:w-7/12 lg:w-8/12 flex items-center justify-center p-8 md:p-12 lg:p-24 bg-white">
+      <div className="w-full md:w-7/12 lg:w-8/12 flex items-center justify-center p-8 md:p-12 lg:p-24 bg-white z-10">
         <div className="w-full max-w-md">
           
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-sm font-medium text-[#6F6B7D] hover:text-[#1F1A67] transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Link>
+
           <div className="mb-10">
             <h3 className="text-2xl font-bold text-[#1F1A67] mb-2">Sign In</h3>
             <p className="text-[#6F6B7D]">Access your workspace securely.</p>
